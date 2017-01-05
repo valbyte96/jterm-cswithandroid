@@ -54,7 +54,7 @@ public class AnagramDictionary {
             wordList.add(word);
             wordSet.add(word);
             String key = sortWord(word);
-            
+
         }
         //Log.d("test",wordList.toString());
 
