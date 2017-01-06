@@ -30,12 +30,29 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class SimpleDictionaryTest {
+    String[] wordsArray = {"apple","bat","car","cat","charles","snaps"};
 
     @Test
     public void testIsWord() {
+
     }
 
     @Test
     public void testGetAnyWordStartingWith() {
+        ArrayList<String> words = new ArrayList<String>(Arrays.asList(wordsArray));
+        SimpleDictionary dict = new SimpleDictionary(words,0);
+        assertEquals("snaps",dict.getAnyWordStartingWith("snap"));
+        assertEquals("apple",dict.getAnyWordStartingWith("a"));
+        assertEquals("charles",dict.getAnyWordStartingWith("CHARLES"));
+        assertEquals("car",dict.getAnyWordStartingWith("car"));
+        assertEquals("car",dict.getAnyWordStartingWith("ca"));
+        assertTrue(dict.getAnyWordStartingWith("ca").startsWith("ca"));
+        System.out.println(dict.getAnyWordStartingWith(""));
+
+
+
+
+
+
     }
 }
