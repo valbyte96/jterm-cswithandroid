@@ -94,6 +94,13 @@ public class AnagramDictionary {
         }
         return false;
     }
+    @VisibleForTesting
+    public AnagramDictionary(String[] words) {
+        Log.d("Testing constructor", "reading test dictionary");
+        for (int i = 0; i < words.length; i++) {
+            wordList.add(words[i]); // Your code here
+        }
+    }
 
 
     public ArrayList<String> getAnagramsWithOneMoreLetter(String word) {
