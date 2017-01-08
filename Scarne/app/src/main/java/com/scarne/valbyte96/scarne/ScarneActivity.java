@@ -17,135 +17,196 @@ public class ScarneActivity extends AppCompatActivity {
     private int totalCompScore;
     private int turnCompScore;
     private int numCompRounds;
-    private boolean userTurn;
+    private int turnScore;
+    private boolean userTurn=true;
 
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scarne);
     }
 
-
     final Handler mHandler = new Handler();
-
-    final TextView scoreView = (TextView) findViewById(R.id.text);
-    final ImageView imageView = (ImageView) findViewById(R.id.dice);
-
 
     // Create a new Runnable. This executes some code when run by the handler.
     final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            if(!userTurn & numCompRounds<10){
+            rollDice2();
+            if(!userTurn & numCompRounds<5){
                 Button rollButton = (Button) findViewById(R.id.button1);
                 rollButton.setClickable(false);
                 Button holdButton = (Button) findViewById(R.id.button2);
                 holdButton.setClickable(false);
                 computerTurn();
-                updateScore();
+                updateText();
                 mHandler.postDelayed(this, 1000);
+
+            }
+            else{
+                Button rollButton = (Button) findViewById(R.id.button1);
+                rollButton.setClickable(true);
+                Button holdButton = (Button) findViewById(R.id.button2);
+                holdButton.setClickable(true);
 
             }
         }
     };
 
-    public void updateScore(){
-        int shownUserScore = turnUserScore+totalUserScore;
-        int shownCompScore = turnCompScore+totalCompScore;
-        String newScore = "Your score: "+shownUserScore+" Computer score: "+shownCompScore;
-        scoreView.setText(newScore);
+
+
+    public void computerTurn() {
+        mHandler.postDelayed(mRunnable, 1000);
+
     }
 
-    public void computerTurn(){
-            int randNum = randDice();
-            if (randNum==1){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
-                turnCompScore =0;
-            }
-            else if(randNum==2){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
-                turnCompScore +=2;
-            }
-            else if(randNum==3){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice3));
-                turnCompScore +=3;
-            }
-            else if(randNum==4){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice4));
-                turnCompScore +=4;
-            }
-            else if(randNum==5){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice5));
-                turnCompScore +=5;
-            }
-            else{
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
-                turnCompScore +=6;
-            }
-            numCompRounds+=1;
-    }
-
-    public void holdDice(){
+    public void holdDice(View view){
         TextView scoreView = (TextView) findViewById(R.id.text);
-        totalUserScore+=turnUserScore;
+        if (userTurn){
+            totalUserScore+=turnScore;
+        }
+        else{
+            totalCompScore+=turnScore;
+        }
         String finalScore = "Your score: "+totalUserScore+" Computer score: "+totalCompScore;
         scoreView.setText(finalScore);
+        userTurn=false;
         computerTurn();
-
     }
 
 
     //helper method; returns random number between 1 and 6
     public int randDice(){
         Random rand = new Random();
-        int randNum = rand.nextInt((6 - 1) + 1) + 1;
+        int randNum = rand.nextInt(6) + 1;
         return randNum;
 
     }
 
 
-    public void rollDice(){
+    public void rollDice2(){
         int randNum = randDice();
-        ImageView imageView = (ImageView) findViewById(R.id.dice);
-//        TextView scoreView = (TextView) findViewById(R.id.text);
-
         if (randNum==1){
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
-            turnUserScore =0;
-            userTurn=false;
+            turnScore =0;
+            updateText();
+            userTurn=true;
+            numCompRounds=0;
 
         }
         else if(randNum==2){
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
-            turnUserScore +=2;
-
+            turnScore +=2;
+            updateText();
         }
         else if(randNum==3){
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice3));
-            turnUserScore+=3;
+            turnScore+=3;
+            updateText();
         }
         else if(randNum==4){
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice4));
-            turnUserScore+=4;
+            turnScore+=4;
+            updateText();
         }
         else if(randNum==5){
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice5));
-            turnUserScore+=5;
+            turnScore+=5;
+            updateText();
         }
         else{
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
-            turnUserScore+=6;
+            turnScore+=6;
+            updateText();
         }
-
+        updateImage(randNum);
     }
 
 
-    public void reset(){
-        TextView scoreView = (TextView) findViewById(R.id.text);
-        String newScore = "Your score: "+0+" Computer score: "+0;
-        scoreView.setText(newScore);
+    public void rollDice(View view){
+        int randNum = randDice();
+        if (randNum==1){
+            turnScore =0;
+            updateText();
+            userTurn=false;
+            numCompRounds=0;
+            computerTurn();
 
+        }
+        else if(randNum==2){
+            turnScore +=2;
+            updateText();
+        }
+        else if(randNum==3){
+            turnScore+=3;
+            updateText();
+        }
+        else if(randNum==4){
+            turnScore+=4;
+            updateText();
+        }
+        else if(randNum==5){
+            turnScore+=5;
+            updateText();
+        }
+        else{
+            turnScore+=6;
+            updateText();
+        }
+        updateImage(randNum);
+    }
+
+    //function updates image
+    public void updateImage(int dots){
+        int ID;
+        if(dots==1){
+            ID = R.drawable.dice1;
+        }
+        else if(dots==2){
+            ID = R.drawable.dice2;
+        }
+        else if(dots==3){
+            ID = R.drawable.dice3;
+        }
+        else if(dots==4){
+            ID = R.drawable.dice4;
+        }
+        else if(dots==5){
+            ID = R.drawable.dice5;
+        }
+        else{
+            ID = R.drawable.dice6;
+        }
+        ((ImageView) findViewById(R.id.dice)).setImageDrawable(
+                getResources().getDrawable(ID));
+    }
+
+    //function updates text
+    public void updateText(){
+        int shownScoreUser;
+        int shownScoreComp;
+
+        if (userTurn){
+            shownScoreUser = turnScore+totalUserScore;
+            shownScoreComp = totalCompScore;
+        }
+        else{
+            shownScoreComp=turnScore+totalCompScore;
+            shownScoreUser=totalUserScore;
+        }
+        String newScore = "Your score: "+shownScoreUser+" Computer score: "+shownScoreComp;
+        ((TextView) findViewById(R.id.text)).setText(newScore);
+
+    }
+
+    //function resets game
+    public void reset(View view){
+        totalCompScore=0;
+        totalUserScore=0;
+        turnScore=0;
+        updateText();
+        updateImage(6);
+        userTurn=true;
+
+    }
+
+    public void clearTurnScore(){
+        turnCompScore=0;
+        turnUserScore=0;
     }
 }
