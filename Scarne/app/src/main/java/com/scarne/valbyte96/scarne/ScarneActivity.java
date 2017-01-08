@@ -13,14 +13,12 @@ import java.util.Random;
 
 public class ScarneActivity extends AppCompatActivity {
     private int totalUserScore;
-    private int turnUserScore;
     private int totalCompScore;
-    private int turnCompScore;
     private int numCompRounds;
     private int turnScore;
     private boolean userTurn=true;
 
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,15 +31,15 @@ public class ScarneActivity extends AppCompatActivity {
     final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            rollDice2();
-            if(!userTurn & numCompRounds<5){
+            rollDiceComp();
+            updateText();
+            if(userTurn==false & numCompRounds<7){
                 Button rollButton = (Button) findViewById(R.id.button1);
                 rollButton.setClickable(false);
                 Button holdButton = (Button) findViewById(R.id.button2);
                 holdButton.setClickable(false);
                 computerTurn();
-                updateText();
-                mHandler.postDelayed(this, 1000);
+
 
             }
             else{
@@ -49,6 +47,11 @@ public class ScarneActivity extends AppCompatActivity {
                 rollButton.setClickable(true);
                 Button holdButton = (Button) findViewById(R.id.button2);
                 holdButton.setClickable(true);
+                totalCompScore+=turnScore;
+                turnScore=0;
+                numCompRounds=0;
+                userTurn=true;
+
 
             }
         }
@@ -57,21 +60,18 @@ public class ScarneActivity extends AppCompatActivity {
 
 
     public void computerTurn() {
+        numCompRounds+=1;
         mHandler.postDelayed(mRunnable, 1000);
 
     }
 
     public void holdDice(View view){
         TextView scoreView = (TextView) findViewById(R.id.text);
-        if (userTurn){
-            totalUserScore+=turnScore;
-        }
-        else{
-            totalCompScore+=turnScore;
-        }
+        totalUserScore+=turnScore;
         String finalScore = "Your score: "+totalUserScore+" Computer score: "+totalCompScore;
         scoreView.setText(finalScore);
         userTurn=false;
+        turnScore=0;
         computerTurn();
     }
 
@@ -85,13 +85,14 @@ public class ScarneActivity extends AppCompatActivity {
     }
 
 
-    public void rollDice2(){
+    public void rollDiceComp(){
         int randNum = randDice();
         if (randNum==1){
             turnScore =0;
             updateText();
             userTurn=true;
             numCompRounds=0;
+
 
         }
         else if(randNum==2){
@@ -199,14 +200,12 @@ public class ScarneActivity extends AppCompatActivity {
         totalCompScore=0;
         totalUserScore=0;
         turnScore=0;
+        numCompRounds=0;
         updateText();
         updateImage(6);
         userTurn=true;
 
     }
 
-    public void clearTurnScore(){
-        turnCompScore=0;
-        turnUserScore=0;
-    }
+
 }
