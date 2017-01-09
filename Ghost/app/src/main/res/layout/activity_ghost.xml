@@ -47,7 +47,26 @@
             android:layout_below="@id/ghostText"
             android:layout_alignParentStart="true"
             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Challenge"
+            android:id="@+id/challenge"
+            android:layout_below="@id/gameStatus"
+            android:layout_margin="2sp"
+            android:onClick="challenge"
+            />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:layout_below="@id/gameStatus"
+            android:layout_toRightOf="@id/challenge"
+            android:layout_margin="2dp"
+            android:onClick="reset"
+
+            />
     </RelativeLayout>
 
 </ScrollView>

@@ -154,9 +154,11 @@ public class ScarneActivity extends AppCompatActivity {
 
     //function updates image
     public void updateImage(int dots){
+        ImageView imageView = (ImageView) findViewById(R.id.dice);
         int ID;
         if(dots==1){
             ID = R.drawable.dice1;
+            imageView.setContentDescription("Dice image 1");
         }
         else if(dots==2){
             ID = R.drawable.dice2;

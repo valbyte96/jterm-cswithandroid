@@ -19,6 +19,7 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,9 +40,13 @@ public class GhostActivity extends AppCompatActivity {
     private static final String KEY_USER_TURN = "keyUserTurn";
     private static final String KEY_CURRENT_WORD = "keyCurrentWord";
     private static final String KEY_SAVED_STATUS = "keySavedStatus";
+//    private static final String user_wins = getString(R.string.USER_WIN);
+//    private static final String comp_wins = getString(R.string.COMP_WIN);
 
-    private GhostDictionary dictionary;
+
+    private SimpleDictionary dictionary;
     private boolean userTurn = false;
+    private boolean winner = false;
     private Random random = new Random();
     private String currentWord = "";
 
@@ -52,6 +57,7 @@ public class GhostActivity extends AppCompatActivity {
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
+            dictionary = new SimpleDictionary(inputStream);
             // Initialize your dictionary from the InputStream.
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
@@ -78,7 +84,6 @@ public class GhostActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -89,6 +94,20 @@ public class GhostActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (winner==false) {
+            int unicode = event.getUnicodeChar();
+            if (unicode >= 'a' && unicode <= 'z') {
+                String letter = Character.toString((char) unicode);
+                currentWord += letter;
+                ((TextView) findViewById(R.id.ghostText)).setText(currentWord);
+                if (dictionary.isWord(currentWord)) {
+                    ((TextView) findViewById(R.id.gameStatus)).setText("Computer Wins");
+                    winner = true;
+                } else {
+                    computerTurn();
+                }
+            }
+        }
         return super.onKeyUp(keyCode, event);
     }
 
@@ -115,7 +134,49 @@ public class GhostActivity extends AppCompatActivity {
     private void computerTurn() {
         TextView label = (TextView) findViewById(R.id.gameStatus);
         // Do computer turn stuff then make it the user's turn again
-        userTurn = true;
-        label.setText(USER_TURN);
+        if (dictionary.isWord(currentWord)){
+            label.setText("Computer Wins");
+            winner=true;
+        }
+        else if (dictionary.getAnyWordStartingWith(currentWord)==null){
+            label.setText("Word Challenged; Computer Wins");
+            winner=true;
+        }
+        else {
+            String word = dictionary.getAnyWordStartingWith(currentWord);
+            int len = currentWord.length();
+            String letter = word.substring(len,len+1);
+            currentWord+=letter;
+            ((TextView) findViewById(R.id.ghostText)).setText(currentWord);
+            if (dictionary.isWord(currentWord)){
+                label.setText( getString(R.string.USER_WIN));
+                winner=true;
+
+            }
+        }
+
+        if (winner==false){
+            userTurn = true;
+            label.setText(USER_TURN);
+        }
+
+    }
+
+    //handler for the challenge button
+    public void challenge(View view){
+        if (dictionary.isWord(currentWord)){
+            ((TextView) findViewById(R.id.gameStatus)).setText( getString(R.string.USER_WIN));
+        }
+        else{
+            ((TextView) findViewById(R.id.gameStatus)).setText("Computer wins");
+            ((TextView) findViewById(R.id.ghostText)).setText(dictionary.getAnyWordStartingWith(currentWord));
+        }
+        winner=true;
+    }
+    //handler for reset
+    public void reset(View view){
+        winner=false;
+        currentWord="";
+
     }
 }

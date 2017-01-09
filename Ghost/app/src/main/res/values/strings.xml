@@ -15,6 +15,9 @@
 -->
 <resources>
     <string name="app_name">Ghost</string>
+    <string name="USER_WIN">You win!</string>
+    <string name="COMP_WIN">Computer wins</string>
+
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
