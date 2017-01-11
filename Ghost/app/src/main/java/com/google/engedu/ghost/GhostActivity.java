@@ -17,6 +17,7 @@ package com.google.engedu.ghost;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -34,17 +35,12 @@ import java.util.Random;
 
 public class GhostActivity extends AppCompatActivity {
     private static final String TAG = "GhostActivity";
-
     private static final String COMPUTER_TURN = "Computer's turn";
     private static final String USER_TURN = "Your turn";
     private static final String KEY_USER_TURN = "keyUserTurn";
     private static final String KEY_CURRENT_WORD = "keyCurrentWord";
     private static final String KEY_SAVED_STATUS = "keySavedStatus";
-//    private static final String user_wins = getString(R.string.USER_WIN);
-//    private static final String comp_wins = getString(R.string.COMP_WIN);
-
-
-    private SimpleDictionary dictionary;
+    private GhostDictionary dictionary;
     private boolean userTurn = false;
     private boolean winner = false;
     private Random random = new Random();
@@ -57,13 +53,21 @@ public class GhostActivity extends AppCompatActivity {
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
-            dictionary = new SimpleDictionary(inputStream);
+            dictionary = new FastDictionary(inputStream);
             // Initialize your dictionary from the InputStream.
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
         }
-        onStart(null);
+        if (savedInstanceState == null) {
+            onStart(null);
+        } else {
+            userTurn = savedInstanceState.getBoolean(KEY_USER_TURN);
+            currentWord = savedInstanceState.getString(KEY_CURRENT_WORD);
+            String status = savedInstanceState.getString(KEY_SAVED_STATUS);
+            ((TextView) findViewById(R.id.ghostText)).setText(currentWord);
+            ((TextView) findViewById(R.id.gameStatus)).setText(status);
+        }
     }
 
     @Override
@@ -177,6 +181,20 @@ public class GhostActivity extends AppCompatActivity {
     public void reset(View view){
         winner=false;
         currentWord="";
+        ((TextView) findViewById(R.id.gameStatus)).setText("Your turn");
+        ((TextView) findViewById(R.id.ghostText)).setText(currentWord);
+        userTurn=true;
 
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(KEY_USER_TURN, userTurn);
+        outState.putString(KEY_CURRENT_WORD, currentWord);
+        outState.putString(KEY_SAVED_STATUS,
+                ((TextView) findViewById(R.id.gameStatus)).getText().toString());
+        super.onSaveInstanceState(outState);
     }
 }

@@ -26,12 +26,30 @@ import static org.junit.Assert.assertTrue;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-public class FastDictionaryTest {
-    @Test
-    public void testIsWord() {
-    }
+public class FastDictionaryTest{
+        String[] wordsArray = {"apple","bat","car","cat","charles","snaps"};
 
-    @Test
-    public void testGetAnyWordStartingWith() {
-    }
+@Test
+public void testIsWord() {
+        ArrayList<String> words = new ArrayList<String>(Arrays.asList(wordsArray));
+        FastDictionary dict = new FastDictionary(words);
+        assertFalse(dict.isWord("app"));
+        assertTrue(dict.isWord("snaps"));
+
+
 }
+
+@Test
+public void testGetAnyWordStartingWith() {
+        ArrayList<String> words = new ArrayList<String>(Arrays.asList(wordsArray));
+        FastDictionary dict = new FastDictionary(words);
+        assertEquals("snaps",dict.getAnyWordStartingWith("snap"));
+//        assertEquals("apple",dict.getAnyWordStartingWith("a"));
+//        assertEquals("charles",dict.getAnyWordStartingWith("CHARLES"));
+//        assertEquals("car",dict.getAnyWordStartingWith("car"));
+//        assertEquals("car",dict.getAnyWordStartingWith("ca"));
+//        assertTrue(dict.getAnyWordStartingWith("ca").startsWith("ca"));
+//        System.out.println(dict.getAnyWordStartingWith(""));
+
+                }
+        }
