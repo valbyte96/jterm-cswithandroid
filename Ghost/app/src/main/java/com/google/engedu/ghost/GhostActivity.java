@@ -183,7 +183,7 @@ public class GhostActivity extends AppCompatActivity {
         currentWord="";
         ((TextView) findViewById(R.id.gameStatus)).setText("Your turn");
         ((TextView) findViewById(R.id.ghostText)).setText(currentWord);
-        userTurn=true;
+        userTurn=false;
 
     }
 

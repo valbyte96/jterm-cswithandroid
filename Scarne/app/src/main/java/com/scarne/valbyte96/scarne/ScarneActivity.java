@@ -1,5 +1,6 @@
 package com.scarne.valbyte96.scarne;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,18 @@ public class ScarneActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scarne);
     }
+    public static final String USER_SCORE = "com.valbyte96.scarne.USER_SCORE";
+    private void playerWins(){
+        Intent intent = new Intent(this,WinActivity.class);
+        intent.putExtra(USER_SCORE, String.valueOf(totalUserScore+turnScore));
+        startActivity(intent);
+        resetScore();
+    }
+
+    public void computerWins(){
+        startActivity(new Intent(this,LoseActivity.class));
+        resetScore();
+    }
 
     final Handler mHandler = new Handler();
 
@@ -33,26 +46,25 @@ public class ScarneActivity extends AppCompatActivity {
         public void run() {
             rollDiceComp();
             updateText();
-            if(userTurn==false & numCompRounds<7){
-                Button rollButton = (Button) findViewById(R.id.button1);
-                rollButton.setClickable(false);
-                Button holdButton = (Button) findViewById(R.id.button2);
-                holdButton.setClickable(false);
-                computerTurn();
+            if (checkScore() == false) {
+                if (userTurn == false & numCompRounds < 3) {
+                    Button rollButton = (Button) findViewById(R.id.button1);
+                    rollButton.setClickable(false);
+                    Button holdButton = (Button) findViewById(R.id.button2);
+                    holdButton.setClickable(false);
+                    computerTurn();
 
 
-            }
-            else{
-                Button rollButton = (Button) findViewById(R.id.button1);
-                rollButton.setClickable(true);
-                Button holdButton = (Button) findViewById(R.id.button2);
-                holdButton.setClickable(true);
-                totalCompScore+=turnScore;
-                turnScore=0;
-                numCompRounds=0;
-                userTurn=true;
-
-
+                } else {
+                    Button rollButton = (Button) findViewById(R.id.button1);
+                    rollButton.setClickable(true);
+                    Button holdButton = (Button) findViewById(R.id.button2);
+                    holdButton.setClickable(true);
+                    totalCompScore += turnScore;
+                    turnScore = 0;
+                    numCompRounds = 0;
+                    userTurn = true;
+                }
             }
         }
     };
@@ -62,7 +74,6 @@ public class ScarneActivity extends AppCompatActivity {
     public void computerTurn() {
         numCompRounds+=1;
         mHandler.postDelayed(mRunnable, 1000);
-
     }
 
     public void holdDice(View view){
@@ -126,15 +137,20 @@ public class ScarneActivity extends AppCompatActivity {
             updateText();
             userTurn=false;
             numCompRounds=0;
+            updateImage(randNum);
             computerTurn();
 
         }
         else if(randNum==2){
             turnScore +=2;
+            updateImage(randNum);
+
             updateText();
         }
         else if(randNum==3){
             turnScore+=3;
+            updateImage(randNum);
+
             updateText();
         }
         else if(randNum==4){
@@ -150,6 +166,7 @@ public class ScarneActivity extends AppCompatActivity {
             updateText();
         }
         updateImage(randNum);
+        checkScore();
     }
 
     //function updates image
@@ -206,8 +223,37 @@ public class ScarneActivity extends AppCompatActivity {
         updateText();
         updateImage(6);
         userTurn=true;
-
     }
+
+    public void resetScore(){
+        totalCompScore=0;
+        totalUserScore=0;
+        turnScore=0;
+        numCompRounds=0;
+        updateText();
+        updateImage(6);
+        userTurn=true;
+    }
+
+    public boolean checkScore(){
+        if (userTurn&totalUserScore+turnScore>=15){
+            playerWins();
+            return true;
+        }
+        else if(userTurn==false&totalCompScore+turnScore>=15){
+            Button rollButton = (Button) findViewById(R.id.button1);
+            rollButton.setClickable(true);
+            Button holdButton = (Button) findViewById(R.id.button2);
+            holdButton.setClickable(true);
+            computerWins();
+
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
 
 }
